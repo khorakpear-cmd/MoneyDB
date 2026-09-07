@@ -1,0 +1,6 @@
+{
+  "name": "MoneyDB - จัดการรายรับรายจ่าย",
+  "description": "เว็บจัดการรายรับรายจ่าย พร้อมสรุปผลรายเดือน กราฟวิเคราะห์ข้อมูล และจัดเก็บข้อมูลสดบน Firebase ด้วยระบบล็อกอิน Google",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

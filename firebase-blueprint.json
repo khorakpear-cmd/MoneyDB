@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Transaction": {
+      "title": "Transaction",
+      "description": "An income or expense transaction record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique ID of the transaction"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of user who owns this transaction"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["income", "expense"],
+          "description": "Transaction type"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Monetary value (positive amount)"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 64,
+          "description": "Category name such as Food, Salary, Transport"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "Notes or memo regarding the transaction"
+        },
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Date string in YYYY-MM-DD"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Payment channel: cash, bank, credit card, promptpay"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["userId", "type", "amount", "category", "date"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Collection of user personal income and expense transactions"
+    }
+  }
+}
