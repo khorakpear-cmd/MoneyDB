@@ -47,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full p-0.5 bg-white border border-slate-200 shadow-xs flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-emerald-500/20">
+            <div className="w-11 h-11 rounded-full p-0.5 bg-white border border-slate-200 shadow-xs flex items-center justify-center shrink-0 overflow-hidden ring-2 ring-blue-500/25">
               <img
                 src="/pvclogo.png"
                 alt="วิทยาลัยอาชีวศึกษาแพร่"
@@ -57,11 +57,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-800 bg-clip-text text-transparent">
+                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-950 via-blue-900 to-sky-600 bg-clip-text text-transparent">
                   MoneyDB
                 </span>
-                <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
                   Firebase Live
                 </span>
               </div>
@@ -73,13 +73,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Center Info / DB Badge */}
           <div className="hidden md:flex items-center gap-2 text-xs text-slate-600 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
-            <Database className="w-3.5 h-3.5 text-emerald-600" />
+            <Database className="w-3.5 h-3.5 text-blue-600" />
             <span>Database:</span>
             <span className="font-semibold text-slate-800 font-mono text-[11px]">MoneyDB</span>
             <span className="text-slate-300">|</span>
             {isLiveConnected ? (
-              <span className="flex items-center gap-1 text-emerald-600 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span className="flex items-center gap-1 text-sky-600 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
                 เรียลไทม์
               </span>
             ) : (
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="btn-navbar-add"
               type="button"
               onClick={onOpenAddModal}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium text-sm shadow-sm transition duration-150 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-medium text-sm shadow-sm shadow-blue-600/20 transition duration-150 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>บันทึกรายการ</span>
@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     src={user.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(user.displayName || user.email || 'User')}`}
                     alt={user.displayName || 'User Avatar'}
                     referrerPolicy="no-referrer"
-                    className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500/40 ring-2 ring-emerald-50"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-blue-500/50 ring-2 ring-sky-100"
                   />
                   <div className="absolute right-0 top-11 hidden group-hover:block z-50 min-w-52 bg-white rounded-xl shadow-xl border border-slate-100 p-3 text-left">
                     <p className="font-semibold text-sm text-slate-900 truncate">

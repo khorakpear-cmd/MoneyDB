@@ -351,8 +351,8 @@ export default function App() {
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-xl text-xs sm:text-sm font-medium animate-in fade-in slide-in-from-bottom-5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900 text-white rounded-2xl shadow-xl text-xs sm:text-sm font-medium animate-in fade-in slide-in-from-bottom-5 border border-slate-700/60">
+          <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -417,7 +417,7 @@ export default function App() {
             type="button"
             onClick={() => setActiveMobileView('charts')}
             className={`flex-1 py-2 rounded-xl transition ${
-              activeMobileView === 'charts' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600'
+              activeMobileView === 'charts' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600'
             }`}
           >
             กราฟวิเคราะห์
@@ -426,7 +426,7 @@ export default function App() {
             type="button"
             onClick={() => setActiveMobileView('history')}
             className={`flex-1 py-2 rounded-xl transition ${
-              activeMobileView === 'history' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-600'
+              activeMobileView === 'history' ? 'bg-white text-blue-700 shadow-xs font-semibold' : 'text-slate-600'
             }`}
           >
             ประวัติรายการ

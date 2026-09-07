@@ -157,7 +157,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <ReceiptText className="w-5 h-5 text-emerald-600" />
+              <ReceiptText className="w-5 h-5 text-blue-600" />
               <span>ประวัติรายการประจำเดือน</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -195,7 +195,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
               placeholder="ค้นหาตามหมวดหมู่, โน้ตย่อ, หรือยอดเงิน..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -226,7 +226,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
               type="button"
               onClick={() => setTypeFilter('income')}
               className={`flex-1 py-1 rounded-lg transition font-medium cursor-pointer ${
-                typeFilter === 'income' ? 'bg-white text-emerald-600 shadow-2xs font-semibold' : 'text-slate-600'
+                typeFilter === 'income' ? 'bg-white text-sky-600 shadow-2xs font-semibold' : 'text-slate-600'
               }`}
             >
               รายรับ
@@ -239,7 +239,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
               id="select-filter-category"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">ทุกหมวดหมู่ ({availableCategories.length})</option>
               {availableCategories.map((c) => (
@@ -268,7 +268,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
               id="btn-empty-add-tx"
               type="button"
               onClick={onOpenAddModal}
-              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs transition cursor-pointer"
+              className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs transition cursor-pointer"
             >
               + บันทึกรายการใหม่
             </button>

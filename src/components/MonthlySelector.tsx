@@ -60,7 +60,7 @@ export const MonthlySelector: React.FC<MonthlySelectorProps> = ({
         </button>
 
         <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200/70">
-          <Calendar className="w-4 h-4 text-emerald-600" />
+          <Calendar className="w-4 h-4 text-blue-600" />
           <span className="font-bold text-slate-800 text-base sm:text-lg">
             {monthName} {thaiYear}
           </span>
@@ -84,7 +84,7 @@ export const MonthlySelector: React.FC<MonthlySelectorProps> = ({
             id="btn-current-month"
             type="button"
             onClick={handleResetCurrent}
-            className="flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-xl font-medium transition cursor-pointer"
+            className="flex items-center gap-1 text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1.5 rounded-xl font-medium transition cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             <span>เดือนปัจจุบัน</span>

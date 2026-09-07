@@ -73,7 +73,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
             ยอดคงเหลือสุทธิ
           </span>
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-            isPositiveBalance ? 'bg-teal-50 text-teal-600' : 'bg-amber-50 text-amber-600'
+            isPositiveBalance ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600'
           }`}>
             <WalletCards className="w-5 h-5" />
           </div>
@@ -96,12 +96,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
             อัตราการออมเงิน
           </span>
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
             <PiggyBank className="w-5 h-5" />
           </div>
         </div>
         <div className="mt-3 flex items-baseline justify-between">
-          <div className="text-2xl font-bold text-indigo-600 font-mono tracking-tight">
+          <div className="text-2xl font-bold text-sky-600 font-mono tracking-tight">
             {savingsRate.toFixed(1)}%
           </div>
           <div className="text-xs text-slate-500 flex items-center gap-1">
@@ -111,7 +111,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({
         </div>
         <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
           <div
-            className="bg-indigo-600 h-1.5 rounded-full transition-all duration-500"
+            className="bg-sky-500 h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${Math.max(0, Math.min(100, savingsRate))}%` }}
           />
         </div>

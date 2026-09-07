@@ -14,17 +14,17 @@ export const AuthBanner: React.FC<AuthBannerProps> = ({ user, loadingAuth, onOpe
 
   if (user) {
     return (
-      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-2xl p-4 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-emerald-700/30">
+      <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-sky-950 rounded-2xl p-4 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-blue-800/40">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-sky-300">
             <Cloud className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm text-emerald-100">
+              <span className="font-bold text-sm text-sky-100">
                 เชื่อมต่อฐานข้อมูล MoneyDB สำเร็จ
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/30 text-sky-200 border border-sky-400/30">
                 Firestore Live Sync
               </span>
             </div>
@@ -37,7 +37,7 @@ export const AuthBanner: React.FC<AuthBannerProps> = ({ user, loadingAuth, onOpe
         <button
           type="button"
           onClick={onOpenAddModal}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition cursor-pointer self-stretch sm:self-auto justify-center"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs transition cursor-pointer self-stretch sm:self-auto justify-center shadow-xs"
         >
           <span>+ บันทึกรายการใหม่</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -48,12 +48,12 @@ export const AuthBanner: React.FC<AuthBannerProps> = ({ user, loadingAuth, onOpe
 
   // Not logged in banner
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-700/60 relative overflow-hidden">
-      <div className="absolute -right-12 -top-12 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-sky-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-blue-900/40 relative overflow-hidden">
+      <div className="absolute -right-12 -top-12 w-64 h-64 bg-sky-500/15 rounded-full blur-3xl pointer-events-none" />
       
       <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium border border-emerald-500/30 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-xs font-medium border border-sky-500/30 mb-3">
             <Database className="w-3.5 h-3.5" />
             <span>Firebase Cloud Firestore : MoneyDB</span>
           </div>
@@ -67,11 +67,11 @@ export const AuthBanner: React.FC<AuthBannerProps> = ({ user, loadingAuth, onOpe
 
           <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-slate-300">
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <ShieldCheck className="w-4 h-4 text-sky-400" />
               <span>เข้าสู่ระบบด้วย Google ปลอดภัย</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Cloud className="w-4 h-4 text-emerald-400" />
+              <Cloud className="w-4 h-4 text-sky-400" />
               <span>ซิงค์ข้อมูลสดทุกอุปกรณ์</span>
             </div>
           </div>

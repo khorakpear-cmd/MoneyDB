@@ -37,7 +37,7 @@ export const QuickAddBar: React.FC<QuickAddBarProps> = ({ onQuickAdd, onOpenModa
               paymentMethod: 'promptpay',
             })
           }
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 text-slate-700 font-medium transition shrink-0 cursor-pointer shadow-2xs"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-sky-50 hover:border-sky-300 border border-slate-200 text-slate-700 font-medium transition shrink-0 cursor-pointer shadow-2xs"
         >
           {p.icon}
           <span>{p.label}</span>
@@ -47,7 +47,7 @@ export const QuickAddBar: React.FC<QuickAddBarProps> = ({ onQuickAdd, onOpenModa
       <button
         type="button"
         onClick={onOpenModal}
-        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-medium transition shrink-0 cursor-pointer"
+        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-medium transition shrink-0 cursor-pointer"
       >
         <PlusCircle className="w-3.5 h-3.5" />
         <span>รายการอื่นๆ</span>

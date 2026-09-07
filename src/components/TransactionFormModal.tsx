@@ -198,7 +198,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
               onClick={() => handleTypeChange('income')}
               className={`py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer flex items-center justify-center gap-2 ${
                 type === 'income'
-                  ? 'bg-emerald-600 text-white shadow-sm'
+                  ? 'bg-sky-600 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -224,7 +224,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-bold font-mono text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                className="w-full pl-9 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-bold font-mono text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
               />
             </div>
 
@@ -266,7 +266,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                     onClick={() => setCategory(cat.name)}
                     className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition cursor-pointer ${
                       isSelected
-                        ? 'border-emerald-500 bg-emerald-50/70 text-emerald-800 font-semibold ring-1 ring-emerald-500'
+                        ? 'border-blue-500 bg-blue-50/70 text-blue-800 font-semibold ring-1 ring-blue-500'
                         : 'border-slate-200 hover:bg-slate-50 text-slate-700'
                     }`}
                   >
@@ -298,7 +298,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -311,7 +311,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
                 id="select-payment-method"
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {PAYMENT_METHODS.map((pm) => (
                   <option key={pm.id} value={pm.id}>
@@ -335,7 +335,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
               placeholder="เช่น ข้าวกะเพราไข่ดาว, ค่ากาแฟอเมซอน"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -354,7 +354,7 @@ export const TransactionFormModal: React.FC<TransactionFormModalProps> = ({
               id="btn-submit-tx"
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium text-sm transition shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-medium text-sm transition shadow-sm shadow-blue-600/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

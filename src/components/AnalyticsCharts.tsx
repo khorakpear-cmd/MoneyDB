@@ -70,7 +70,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
         <div>
           <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-emerald-600" />
+            <BarChart3 className="w-5 h-5 text-blue-600" />
             <span>กราฟวิเคราะห์ข้อมูลการเงิน</span>
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -86,7 +86,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
             onClick={() => setActiveTab('daily')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
               activeTab === 'daily'
-                ? 'bg-white text-emerald-700 shadow-xs font-semibold'
+                ? 'bg-white text-blue-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -100,7 +100,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
             onClick={() => setActiveTab('category')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
               activeTab === 'category'
-                ? 'bg-white text-emerald-700 shadow-xs font-semibold'
+                ? 'bg-white text-blue-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -114,7 +114,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
             onClick={() => setActiveTab('payment')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${
               activeTab === 'payment'
-                ? 'bg-white text-emerald-700 shadow-xs font-semibold'
+                ? 'bg-white text-blue-700 shadow-xs font-semibold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
