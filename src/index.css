@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Kanit', sans-serif;
+  }
+}
+
+:root {
+  font-family: 'Kanit', sans-serif;
+}
