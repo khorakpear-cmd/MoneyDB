@@ -3,9 +3,12 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   User,
-  onAuthStateChanged
+  onAuthStateChanged,
+  AuthError
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -91,11 +94,40 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Google Sign In
-export async function signInWithGoogle() {
+// Google Sign In with fallback to redirect
+export async function signInWithGoogle(useRedirect: boolean = false) {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
-  return await signInWithPopup(auth, provider);
+
+  if (useRedirect) {
+    await signInWithRedirect(auth, provider);
+    return null;
+  }
+
+  try {
+    const res = await signInWithPopup(auth, provider);
+    return res.user;
+  } catch (error: unknown) {
+    const authError = error as AuthError;
+    // If popup was blocked by browser, attempt redirect fallback automatically
+    if (authError?.code === 'auth/popup-blocked') {
+      console.warn('Popup blocked, attempting redirect sign-in...');
+      await signInWithRedirect(auth, provider);
+      return null;
+    }
+    throw error;
+  }
+}
+
+// Check redirect sign-in result when returning to the app
+export async function checkRedirectResult(): Promise<User | null> {
+  try {
+    const res = await getRedirectResult(auth);
+    return res?.user || null;
+  } catch (error) {
+    console.error('Redirect sign-in error:', error);
+    throw error;
+  }
 }
 
 // Sign Out

@@ -16,6 +16,8 @@ import {
   createTransaction,
   updateExistingTransaction,
   deleteExistingTransaction,
+  signInWithGoogle,
+  checkRedirectResult,
 } from './lib/firebase';
 import { EXPENSE_CATEGORIES, THAI_MONTHS } from './lib/constants';
 import { Navbar } from './components/Navbar';
@@ -26,6 +28,9 @@ import { AnalyticsCharts } from './components/AnalyticsCharts';
 import { TransactionList } from './components/TransactionList';
 import { TransactionFormModal } from './components/TransactionFormModal';
 import { QuickAddBar } from './components/QuickAddBar';
+import { AuthErrorModal, AuthErrorInfo } from './components/AuthErrorModal';
+
+const GUEST_STORAGE_KEY = 'moneydb_guest_transactions_v1';
 
 // Realistic sample transactions for guest preview mode
 const generateSampleTransactions = (year: number, month: number): Transaction[] => {
@@ -121,11 +126,25 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
   const [isLiveConnected, setIsLiveConnected] = useState<boolean>(false);
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const [authErrorInfo, setAuthErrorInfo] = useState<AuthErrorInfo | null>(null);
+  const [isAuthErrorModalOpen, setIsAuthErrorModalOpen] = useState<boolean>(false);
 
-  // Transactions state
-  const [transactions, setTransactions] = useState<Transaction[]>(() =>
-    generateSampleTransactions(currentDate.getFullYear(), currentDate.getMonth() + 1)
-  );
+  // Transactions state with localStorage persistence for guest mode
+  const [transactions, setTransactions] = useState<Transaction[]>(() => {
+    try {
+      const saved = localStorage.getItem(GUEST_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('LocalStorage parse error:', e);
+    }
+    return generateSampleTransactions(currentDate.getFullYear(), currentDate.getMonth() + 1);
+  });
 
   // Modals & form state
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -140,6 +159,62 @@ export default function App() {
     setTimeout(() => {
       setToastMessage((prev) => (prev === msg ? null : prev));
     }, 3000);
+  };
+
+  // Check redirect sign-in outcome on initial load
+  useEffect(() => {
+    checkRedirectResult()
+      .then((resUser) => {
+        if (resUser) {
+          showToast(`ยินดีต้อนรับ ${resUser.displayName || resUser.email}`);
+        }
+      })
+      .catch((err: any) => {
+        console.error('Redirect sign-in error:', err);
+        handleAuthError(err);
+      });
+  }, []);
+
+  // Save guest transactions to localStorage
+  useEffect(() => {
+    if (!user && transactions.length > 0) {
+      try {
+        localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(transactions));
+      } catch (e) {
+        console.error('LocalStorage save error:', e);
+      }
+    }
+  }, [transactions, user]);
+
+  // Handle Google Auth Error
+  const handleAuthError = (err: any) => {
+    const code = err?.code || 'auth/unknown';
+    const message = err?.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อ Google Auth';
+    const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+
+    if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+      showToast('ยกเลิกการเข้าสู่ระบบ');
+      return;
+    }
+
+    setAuthErrorInfo({ code, message, hostname });
+    setIsAuthErrorModalOpen(true);
+  };
+
+  // Google Login Handler
+  const handleLogin = async (useRedirect: boolean = false) => {
+    setIsLoggingIn(true);
+    try {
+      const loggedUser = await signInWithGoogle(useRedirect);
+      if (loggedUser) {
+        showToast(`เข้าสู่ระบบสำเร็จ: ${loggedUser.displayName || loggedUser.email}`);
+        setIsAuthErrorModalOpen(false);
+      }
+    } catch (err: any) {
+      handleAuthError(err);
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   // Auth Listener
@@ -362,6 +437,8 @@ export default function App() {
         user={user}
         loadingAuth={loadingAuth}
         isLiveConnected={isLiveConnected}
+        isLoggingIn={isLoggingIn}
+        onLogin={handleLogin}
         onOpenAddModal={handleOpenAddModal}
       />
 
@@ -372,6 +449,8 @@ export default function App() {
         <AuthBanner
           user={user}
           loadingAuth={loadingAuth}
+          isLoggingIn={isLoggingIn}
+          onLogin={handleLogin}
           onOpenAddModal={handleOpenAddModal}
         />
 
@@ -493,6 +572,15 @@ export default function App() {
         }}
         onSave={handleSaveTransaction}
         editingTx={editingTx}
+      />
+
+      {/* Auth Error Guidance & Diagnosis Modal */}
+      <AuthErrorModal
+        isOpen={isAuthErrorModalOpen}
+        errorInfo={authErrorInfo}
+        onClose={() => setIsAuthErrorModalOpen(false)}
+        onRetryPopup={() => handleLogin(false)}
+        onRetryRedirect={() => handleLogin(true)}
       />
 
     </div>
