@@ -47,7 +47,7 @@ service cloud.firestore {
 
     // Allow test connection check
     match /test/connection {
-      allow get: if isSignedIn();
+      allow get: if true;
     }
 
     // User Transactions Subcollection

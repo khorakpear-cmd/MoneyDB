@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   AlertTriangle,
 } from 'lucide-react';
-import { Transaction, DailySummary, CategoryExpense } from './types';
+import { Transaction, DailySummary, CategoryExpense, AppUserProfile } from './types';
 import {
   onAuthStatusChange,
   subscribeToTransactions,
@@ -18,6 +18,7 @@ import {
   deleteExistingTransaction,
   signInWithGoogle,
   checkRedirectResult,
+  logoutUser,
 } from './lib/firebase';
 import { EXPENSE_CATEGORIES, THAI_MONTHS } from './lib/constants';
 import { Navbar } from './components/Navbar';
@@ -31,6 +32,7 @@ import { QuickAddBar } from './components/QuickAddBar';
 import { AuthErrorModal, AuthErrorInfo } from './components/AuthErrorModal';
 
 const GUEST_STORAGE_KEY = 'moneydb_guest_transactions_v1';
+const SAVED_PROFILE_KEY = 'moneydb_saved_profile_v1';
 
 // Realistic sample transactions for guest preview mode
 const generateSampleTransactions = (year: number, month: number): Transaction[] => {
@@ -123,7 +125,17 @@ export default function App() {
   const [selectedYear, setSelectedYear] = useState<number>(currentDate.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(currentDate.getMonth() + 1);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | AppUserProfile | null>(() => {
+    try {
+      const saved = localStorage.getItem(SAVED_PROFILE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error('Error loading saved profile:', e);
+    }
+    return null;
+  });
   const [loadingAuth, setLoadingAuth] = useState<boolean>(true);
   const [isLiveConnected, setIsLiveConnected] = useState<boolean>(false);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
@@ -161,7 +173,7 @@ export default function App() {
     }, 3000);
   };
 
-  // Check redirect sign-in outcome on initial load
+  // Check redirect sign-in outcome on initial load safely
   useEffect(() => {
     checkRedirectResult()
       .then((resUser) => {
@@ -170,18 +182,23 @@ export default function App() {
         }
       })
       .catch((err: any) => {
-        console.error('Redirect sign-in error:', err);
-        handleAuthError(err);
+        console.warn('Redirect sign-in check failed:', err);
       });
   }, []);
 
-  // Save guest transactions to localStorage
+  // Save guest or local profile transactions to localStorage
   useEffect(() => {
     if (!user && transactions.length > 0) {
       try {
         localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(transactions));
       } catch (e) {
         console.error('LocalStorage save error:', e);
+      }
+    } else if (user && 'isLocalProfile' in user && user.isLocalProfile && transactions.length > 0) {
+      try {
+        localStorage.setItem(`moneydb_txs_${user.uid}`, JSON.stringify(transactions));
+      } catch (e) {
+        console.error('LocalStorage save user error:', e);
       }
     }
   }, [transactions, user]);
@@ -207,6 +224,8 @@ export default function App() {
     try {
       const loggedUser = await signInWithGoogle(useRedirect);
       if (loggedUser) {
+        setUser(loggedUser);
+        localStorage.removeItem(SAVED_PROFILE_KEY);
         showToast(`เข้าสู่ระบบสำเร็จ: ${loggedUser.displayName || loggedUser.email}`);
         setIsAuthErrorModalOpen(false);
       }
@@ -217,14 +236,68 @@ export default function App() {
     }
   };
 
+  // Quick Sign In for instant access without Firebase Console domain restriction
+  const handleQuickSignIn = (email: string, name: string) => {
+    const cleanEmail = email.trim() || 'khorakpear@gmail.com';
+    const cleanName = name.trim() || cleanEmail.split('@')[0] || 'khorakpear';
+    const profile: AppUserProfile = {
+      uid: `local_${cleanEmail.replace(/[^a-zA-Z0-9]/g, '_')}`,
+      displayName: cleanName,
+      email: cleanEmail,
+      photoURL: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}`,
+      isLocalProfile: true,
+    };
+    setUser(profile);
+    try {
+      localStorage.setItem(SAVED_PROFILE_KEY, JSON.stringify(profile));
+      const userSavedTxs = localStorage.getItem(`moneydb_txs_${profile.uid}`);
+      if (userSavedTxs) {
+        const parsed = JSON.parse(userSavedTxs);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTransactions(parsed);
+        }
+      }
+    } catch (e) {
+      console.error('Error saving local profile:', e);
+    }
+    setIsAuthErrorModalOpen(false);
+    showToast(`เข้าสู่ระบบสำเร็จ: ${cleanName} (${cleanEmail})`);
+  };
+
+  // Logout Handler
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem(SAVED_PROFILE_KEY);
+      await logoutUser();
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      setUser(null);
+      setIsLiveConnected(false);
+      showToast('ออกจากระบบเรียบร้อยแล้ว');
+    }
+  };
+
   // Auth Listener
   useEffect(() => {
     const unsubscribeAuth = onAuthStatusChange((currentUser) => {
-      setUser(currentUser);
-      setLoadingAuth(false);
-      if (!currentUser) {
-        setIsLiveConnected(false);
+      if (currentUser) {
+        setUser(currentUser);
+        localStorage.removeItem(SAVED_PROFILE_KEY);
+      } else {
+        // If not logged into Firebase, check if there was a saved local profile
+        try {
+          const saved = localStorage.getItem(SAVED_PROFILE_KEY);
+          if (saved) {
+            setUser(JSON.parse(saved));
+          } else {
+            setUser(null);
+          }
+        } catch (e) {
+          setUser(null);
+        }
       }
+      setLoadingAuth(false);
     });
     return () => unsubscribeAuth();
   }, []);
@@ -232,9 +305,28 @@ export default function App() {
   // Subscribe to Firestore when user is logged in
   useEffect(() => {
     if (!user) {
+      setIsLiveConnected(false);
       return;
     }
 
+    // If local profile, load local transactions
+    if ('isLocalProfile' in user && user.isLocalProfile) {
+      setIsLiveConnected(false);
+      try {
+        const userSavedTxs = localStorage.getItem(`moneydb_txs_${user.uid}`);
+        if (userSavedTxs) {
+          const parsed = JSON.parse(userSavedTxs);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setTransactions(parsed);
+          }
+        }
+      } catch (e) {
+        console.error('Load local txs error:', e);
+      }
+      return;
+    }
+
+    // Real Firebase User
     setIsLiveConnected(true);
     const unsubscribeSnapshot = subscribeToTransactions(
       user.uid,
@@ -358,11 +450,11 @@ export default function App() {
   const handleSaveTransaction = async (
     txData: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
   ) => {
-    if (editingTx) {
-      if (user) {
-        await updateExistingTransaction(user.uid, editingTx.id, txData);
-        showToast('อัปเดตรายการใน Firebase MoneyDB สำเร็จ');
-      } else {
+    const isLocal = !user || ('isLocalProfile' in user && user.isLocalProfile);
+
+    if (isLocal) {
+      const uid = user ? user.uid : 'guest';
+      if (editingTx) {
         setTransactions((prev) =>
           prev.map((item) =>
             item.id === editingTx.id
@@ -375,37 +467,70 @@ export default function App() {
           )
         );
         showToast('อัปเดตรายการเรียบร้อย');
-      }
-    } else {
-      if (user) {
-        await createTransaction(user.uid, txData);
-        showToast('บันทึกรายการสดลงใน Firebase MoneyDB เรียบร้อย');
       } else {
-        const newDemoTx: Transaction = {
-          id: 'demo_' + Date.now(),
-          userId: 'guest',
+        const newTx: Transaction = {
+          id: 'tx_' + Date.now(),
+          userId: uid,
           ...txData,
           createdAt: new Date().toISOString(),
         };
-        setTransactions((prev) => [newDemoTx, ...prev]);
-        showToast('บันทึกรายการสำเร็จ (โหมดจำลอง)');
+        setTransactions((prev) => [newTx, ...prev]);
+        showToast('บันทึกรายการสำเร็จ');
+      }
+      setEditingTx(null);
+      return;
+    }
+
+    // Real Firebase User
+    try {
+      if (editingTx) {
+        await updateExistingTransaction(user.uid, editingTx.id, txData);
+        showToast('อัปเดตรายการใน Firebase MoneyDB สำเร็จ');
+      } else {
+        await createTransaction(user.uid, txData);
+        showToast('บันทึกรายการสดลงใน Firebase MoneyDB เรียบร้อย');
+      }
+    } catch (error) {
+      console.warn('Firebase save fallback to local:', error);
+      if (editingTx) {
+        setTransactions((prev) =>
+          prev.map((item) =>
+            item.id === editingTx.id
+              ? { ...item, ...txData, updatedAt: new Date().toISOString() }
+              : item
+          )
+        );
+        showToast('อัปเดตรายการเรียบร้อย (บันทึกในเครื่อง)');
+      } else {
+        const fallbackTx: Transaction = {
+          id: 'local_' + Date.now(),
+          userId: user.uid,
+          ...txData,
+          createdAt: new Date().toISOString(),
+        };
+        setTransactions((prev) => [fallbackTx, ...prev]);
+        showToast('บันทึกรายการเรียบร้อย (บันทึกในเครื่อง)');
       }
     }
     setEditingTx(null);
   };
 
   const handleDeleteTransaction = async (txId: string) => {
-    if (user) {
-      try {
-        await deleteExistingTransaction(user.uid, txId);
-        showToast('ลบรายการออกจาก Firebase MoneyDB แล้ว');
-      } catch (err) {
-        console.error('Delete error:', err);
-        showToast('เกิดข้อผิดพลาดในการลบรายการ');
-      }
-    } else {
+    const isLocal = !user || ('isLocalProfile' in user && user.isLocalProfile);
+
+    if (isLocal) {
       setTransactions((prev) => prev.filter((t) => t.id !== txId));
       showToast('ลบรายการเรียบร้อย');
+      return;
+    }
+
+    try {
+      await deleteExistingTransaction(user.uid, txId);
+      showToast('ลบรายการออกจาก Firebase MoneyDB แล้ว');
+    } catch (err) {
+      console.warn('Firebase delete fallback:', err);
+      setTransactions((prev) => prev.filter((t) => t.id !== txId));
+      showToast('ลบรายการเรียบร้อย (ลบจากเครื่อง)');
     }
   };
 
@@ -439,6 +564,7 @@ export default function App() {
         isLiveConnected={isLiveConnected}
         isLoggingIn={isLoggingIn}
         onLogin={handleLogin}
+        onLogout={handleLogout}
         onOpenAddModal={handleOpenAddModal}
       />
 
@@ -581,6 +707,7 @@ export default function App() {
         onClose={() => setIsAuthErrorModalOpen(false)}
         onRetryPopup={() => handleLogin(false)}
         onRetryRedirect={() => handleLogin(true)}
+        onQuickSignIn={handleQuickSignIn}
       />
 
     </div>

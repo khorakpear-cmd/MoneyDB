@@ -26,11 +26,19 @@ import firebaseConfig from '../../firebase-applet-config.json';
 import { Transaction } from '../types';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db =
+  firebaseConfig.firestoreDatabaseId &&
+  firebaseConfig.firestoreDatabaseId !== '(default)' &&
+  firebaseConfig.firestoreDatabaseId.trim() !== ''
+    ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+    : getFirestore(app);
 export const auth = getAuth(app);
 
 export const FIREBASE_PROJECT_ID = firebaseConfig.projectId;
-export const FIRESTORE_DB_NAME = firebaseConfig.firestoreDatabaseId;
+export const FIRESTORE_DB_NAME =
+  firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== '(default)'
+    ? firebaseConfig.firestoreDatabaseId
+    : 'default';
 
 // Test connection on startup per Firebase integration requirements
 export async function testConnection() {
@@ -100,6 +108,9 @@ export async function signInWithGoogle(useRedirect: boolean = false) {
   provider.setCustomParameters({ prompt: 'select_account' });
 
   if (useRedirect) {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      sessionStorage.setItem('firebase_redirect_pending', '1');
+    }
     await signInWithRedirect(auth, provider);
     return null;
   }
@@ -112,6 +123,9 @@ export async function signInWithGoogle(useRedirect: boolean = false) {
     // If popup was blocked by browser, attempt redirect fallback automatically
     if (authError?.code === 'auth/popup-blocked') {
       console.warn('Popup blocked, attempting redirect sign-in...');
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        sessionStorage.setItem('firebase_redirect_pending', '1');
+      }
       await signInWithRedirect(auth, provider);
       return null;
     }
@@ -121,6 +135,16 @@ export async function signInWithGoogle(useRedirect: boolean = false) {
 
 // Check redirect sign-in result when returning to the app
 export async function checkRedirectResult(): Promise<User | null> {
+  if (typeof window === 'undefined' || !window.sessionStorage) {
+    return null;
+  }
+  const isPending = sessionStorage.getItem('firebase_redirect_pending');
+  if (!isPending) {
+    // Only check redirect if the user actually initiated a redirect sign-in
+    return null;
+  }
+  sessionStorage.removeItem('firebase_redirect_pending');
+
   try {
     const res = await getRedirectResult(auth);
     return res?.user || null;

@@ -2,6 +2,14 @@ export type TransactionType = 'income' | 'expense';
 
 export type PaymentMethod = 'cash' | 'transfer' | 'credit_card' | 'promptpay';
 
+export interface AppUserProfile {
+  uid: string;
+  displayName: string | null;
+  email: string | null;
+  photoURL: string | null;
+  isLocalProfile?: boolean;
+}
+
 export interface Transaction {
   id: string;
   userId: string;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from 'firebase/auth';
+import { AppUserProfile } from '../types';
 import {
   Wallet,
   LogIn,
@@ -13,11 +14,12 @@ import {
 import { logoutUser, FIREBASE_PROJECT_ID } from '../lib/firebase';
 
 interface NavbarProps {
-  user: User | null;
+  user: User | AppUserProfile | null;
   loadingAuth: boolean;
   isLiveConnected: boolean;
   isLoggingIn: boolean;
   onLogin: (useRedirect?: boolean) => void;
+  onLogout?: () => void;
   onOpenAddModal: () => void;
 }
 
@@ -27,9 +29,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   isLiveConnected,
   isLoggingIn,
   onLogin,
+  onLogout,
   onOpenAddModal,
 }) => {
   const handleLogout = async () => {
+    if (onLogout) {
+      onLogout();
+      return;
+    }
     try {
       await logoutUser();
     } catch (err) {

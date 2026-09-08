@@ -1,9 +1,10 @@
 import React from 'react';
 import { User } from 'firebase/auth';
+import { AppUserProfile } from '../types';
 import { Cloud, ShieldCheck, Database, ArrowRight, Loader2 } from 'lucide-react';
 
 interface AuthBannerProps {
-  user: User | null;
+  user: User | AppUserProfile | null;
   loadingAuth: boolean;
   isLoggingIn: boolean;
   onLogin: (useRedirect?: boolean) => void;

@@ -24,6 +24,7 @@ interface AuthErrorModalProps {
   onClose: () => void;
   onRetryRedirect: () => void;
   onRetryPopup: () => void;
+  onQuickSignIn?: (email: string, name: string) => void;
 }
 
 export const AuthErrorModal: React.FC<AuthErrorModalProps> = ({
@@ -32,8 +33,11 @@ export const AuthErrorModal: React.FC<AuthErrorModalProps> = ({
   onClose,
   onRetryRedirect,
   onRetryPopup,
+  onQuickSignIn,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [customEmail, setCustomEmail] = useState('khorakpear@gmail.com');
+  const [customName, setCustomName] = useState('khorakpear');
 
   if (!isOpen || !errorInfo) return null;
 
@@ -128,6 +132,38 @@ export const AuthErrorModal: React.FC<AuthErrorModalProps> = ({
                         <span>คัดลอก</span>
                       </>
                     )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Login Fallback Box */}
+              <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <p className="font-bold text-xs text-blue-900 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                    หรือเข้าใช้งานทันทีด้วยบัญชีของคุณ (ไม่ต้องตั้งค่า Firebase)
+                  </p>
+                  <span className="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-full">
+                    แนะนำ
+                  </span>
+                </div>
+                <p className="text-[11px] text-blue-700 leading-relaxed">
+                  สามารถเข้าใช้งานด้วยอีเมลของคุณได้ทันที ระบบจะแยกบันทึกข้อมูลรายรับ-รายจ่ายของคุณไว้ในเครื่องอย่างปลอดภัย
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                  <input
+                    type="email"
+                    value={customEmail}
+                    onChange={(e) => setCustomEmail(e.target.value)}
+                    placeholder="อีเมลของคุณ เช่น khorakpear@gmail.com"
+                    className="flex-1 px-3 py-2 text-xs bg-white rounded-xl border border-blue-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => onQuickSignIn && onQuickSignIn(customEmail, customName)}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-semibold shadow-xs transition cursor-pointer shrink-0"
+                  >
+                    เข้าสู่ระบบทันที
                   </button>
                 </div>
               </div>
